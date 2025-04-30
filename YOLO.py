@@ -20,25 +20,23 @@ model.train(
     mosaic=1.0,  
     mixup=0.2
 )
-# Load the trained model
+
 trained_model = YOLO("runs/detect/train/weights/best.pt")
 
 model.save("/content/drive/MyDrive/best_model-L.pt")
 
-# Load the trained YOLOv8 model
 trained_model = YOLO("/content/drive/MyDrive/best_model-L.pt")
 
-# Define input and output directories
+
 input_folder = "/content/drive/MyDrive/original-images"
 save_dir = "/content/drive/MyDrive/wheres_waldo_res"
 
-# Ensure save directory exists
+
 if os.path.exists(save_dir):
-    # Clear the directory (delete old images)
     for file in os.listdir(save_dir):
         file_path = os.path.join(save_dir, file)
         if os.path.isfile(file_path):
-            os.remove(file_path)  # Remove the old file
+            os.remove(file_path) 
 else:
     os.makedirs(save_dir)  # Create directory if it doesn't exist
 
@@ -57,15 +55,15 @@ for image_file in image_files:
 
 
     for result in results:
-        boxes = result.boxes.xyxy.cpu().numpy()  # Extract bounding boxes
+        boxes = result.boxes.xyxy.cpu().numpy() 
         confidences = result.boxes.conf.cpu().numpy()  # Confidence scores
 
         # Draw bounding boxes on the image
         for box, conf in zip(boxes, confidences):
             x1, y1, x2, y2 = map(int, box)
-            cv2.rectangle(image, (x1, y1), (x2, y2), (255, 255, 0), 3)  # Yellow box
+            cv2.rectangle(image, (x1, y1), (x2, y2), (255, 255, 0), 3)  
             cv2.putText(image, f"{conf:.2f}", (x1, y1 - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 0), 2)  # Confidence score in yellow
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 0), 2)  
 
     # Save the processed image (overwrite previous results)
     output_path = os.path.join(save_dir, image_file)
